@@ -1,6 +1,4 @@
 import javax.swing.*;
-import java.util.*;
-import java.util.Timer;
 
 public class buttonCreator extends JButton {
     public buttonCreator(ImageIcon Img, String name, int X, int Y, int W, int H) {
@@ -56,17 +54,17 @@ public class buttonCreator extends JButton {
     }
 
     public void flashButton(){
-        //setIcon(handleOn());
-        setVisible(false);
-        System.out.println("Changed On");
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            System.out.println("Thread was interrupted");
-            e.printStackTrace();
-        }
-        //setIcon(handleOff());
-        setVisible(true);
-        System.out.println("Changed Off");
+        setIcon(handleOn());
+        //setVisible(false);
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        //setVisible(true);
+                        setIcon(handleOff());
+                    }
+                },
+                250
+        );
     }
 }
