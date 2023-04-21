@@ -24,7 +24,13 @@ public class buttonListener implements ActionListener {
                     check(regularGame.currentButton, Sequence);
                 } else{
                     System.out.println("Game Over!");
-                    regularGame.gameFrame.dispose();
+                    regularGame.gameOver.setVisible(true);
+                    regularGame.menuButton.setVisible(true);
+                    regularGame.rButton.setVisible(false);
+                    regularGame.bButton.setVisible(false);
+                    regularGame.gButton.setVisible(false);
+                    regularGame.yButton.setVisible(false);
+                    //regularGame.gameFrame.dispose();
                 }
             }
             case "BG" -> {
