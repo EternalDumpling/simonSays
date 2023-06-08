@@ -1,4 +1,7 @@
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
+import java.io.IOException;
 
 public class buttonCreator extends JButton {
     public buttonCreator(ImageIcon Img, String name, int X, int Y, int W, int H) {
@@ -53,14 +56,13 @@ public class buttonCreator extends JButton {
         }
     }
 
-    public void flashButton(){
+    public void flashButton() throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         setIcon(handleOn());
-        //setVisible(false);
+        playSound.playClick();
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        //setVisible(true);
                         setIcon(handleOff());
                     }
                 },

@@ -21,10 +21,6 @@ public class selectorMain extends JFrame {
         button3.setBounds(55, 145, 175, 30);
         panel.add(button3);
         add(panel);
-        setVisible(true);
-
-
-
         button1.addActionListener(new buttonListener("RM"));
         button2.addActionListener(new buttonListener("HM"));
         button3.addActionListener(new buttonListener("HS"));

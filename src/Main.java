@@ -1,7 +1,6 @@
 public class Main {
+    public static selectorMain selectorMain =  new selectorMain();
     public static void main(String[] args){
-        //new selectorMain();
-        //noinspection InstantiationOfUtilityClass
-        new regularGame();
+        selectorMain.setVisible(true);
     }
 }

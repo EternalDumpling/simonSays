@@ -1,5 +1,8 @@
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -8,7 +11,7 @@ public class buttonListener implements ActionListener {
     public buttonListener(String name) {
         Name = name;
     }
-
+    static boolean previousGame = false;
 
     public void actionPerformed(ActionEvent e) {
         switch (this.Name){
@@ -17,37 +20,80 @@ public class buttonListener implements ActionListener {
                 ArrayList<buttonCreator> Sequence = regularGame.Sequence;
                 buttonCreator Obj = Sequence.get(currentButton);
                 if ((Objects.equals(Obj.Name(), this.Name)) && currentButton < Sequence.size()){
-                    System.out.println("Correct!");
                     regularGame.currentButton++;
-                    System.out.println("Current Button: " + regularGame.currentButton);
-                    System.out.println("Sequence Size: "+ Sequence.size());
-                    check(regularGame.currentButton, Sequence);
+                    try {
+                        check(regularGame.currentButton, Sequence);
+                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 } else{
-                    System.out.println("Game Over!");
+                    try {
+                        playSound.playWrong();
+                    } catch (UnsupportedAudioFileException | LineUnavailableException | IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     regularGame.gameOver.setVisible(true);
                     regularGame.menuButton.setVisible(true);
                     regularGame.rButton.setVisible(false);
                     regularGame.bButton.setVisible(false);
                     regularGame.gButton.setVisible(false);
                     regularGame.yButton.setVisible(false);
-                    //regularGame.gameFrame.dispose();
+                    regularGame.challengeTimer.stop();
+                    try {
+                        Thread.sleep(1250);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    try {
+                        playSound.playOutro();
+                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
             case "BG" -> {
-                regularGame.addToSequence();
+                regularGame.addToSequence(true);
                 regularGame.beginButton.setVisible(false);
             }
-            case "RM" -> System.out.println("Regular Mode");
-            case "HM" -> System.out.println("Hard Mode");
+            case "Return" -> {
+                regularGame.gameFrame.setVisible(false);
+                Main.selectorMain.setVisible(true);
+                playSound.stopPlayback();
+            }
+            case "RM" -> {
+                System.out.println(previousGame);
+                if(!previousGame) {
+                    //noinspection InstantiationOfUtilityClass
+                    new regularGame();
+                    changeState();
+                }else{
+                    regularGame.resetGame();
+                }
+                Main.selectorMain.setVisible(false);
+            }
+            case "HM" -> {
+                System.out.println(previousGame);
+                if(!previousGame) {
+                    //noinspection InstantiationOfUtilityClass
+                    new regularGame();
+                    changeState();
+                }else{
+                    regularGame.resetGame();
+                }
+                regularGame.challengeMode = true;
+                Main.selectorMain.setVisible(false);
+            }
             case "HS" -> System.out.println("High Scores");
         }
     }
 
-    void check(int currentButton, ArrayList<buttonCreator> Sequence) {
+    void check(int currentButton, ArrayList<buttonCreator> Sequence) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         if(currentButton == Sequence.size()){
-            System.out.println("Check");
-            regularGame.gameScore++;
-            regularGame.addToSequence();
+            playSound.playCorrect();
+            regularGame.addToSequence(false);
         }
+    }
+    void changeState(){
+        previousGame = true;
     }
 }
